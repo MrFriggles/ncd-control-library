@@ -36,7 +36,8 @@ class NCDDevice:
     def __init__(self, port, ip=None):
         """Create an NCDDevice object with a port and optional IP address.
 
-        :param port: The TCP network port the NCD device is listening for connections.
+        :param port: The TCP network port the NCD device is
+                     listening for connections.
         :param ip: Optional parameter. Set the IP address if known.
          Otherwise, try to find it on the network
         """
@@ -71,7 +72,8 @@ class NCDDevice:
 
             print(f"Found NCD device on network with IP: {self.ip}")
         except (OSError, IndexError):
-            print("Unable to find an NCD device on network. Run the NCDConfig tool to troubleshoot connection issues")
+            print("Unable to find an NCD device on network. Run the NCDConfig"
+                  " tool to troubleshoot connection issues")
             self.ip = ""
 
     def __receive(self):
@@ -87,7 +89,8 @@ class NCDDevice:
         while bytes_rxd < self.rx_msglen:
             chunk = self.sock.recv(self.rx_msglen - bytes_rxd)
             if chunk == b'':
-                raise RuntimeError("socket connection broken. Failed to read socket.")
+                raise RuntimeError("socket connection broken."
+                                   " Failed to read socket.")
             rx_data.append(chunk)
             bytes_rxd = bytes_rxd + len(chunk)
         return b''.join(rx_data)
@@ -104,7 +107,8 @@ class NCDDevice:
         while total_sent < self.tx_msglen:
             sent = self.sock.send(data[total_sent:])
             if sent == 0:
-                raise RuntimeError("socket connection broken. Failed to send to socket.")
+                raise RuntimeError("socket connection broken."
+                                   " Failed to send to socket.")
             total_sent = total_sent + sent
 
     def __calculatechecksum(self, msg):
