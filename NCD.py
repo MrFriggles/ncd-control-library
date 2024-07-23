@@ -4,6 +4,18 @@ import socket
 import subprocess
 
 
+def calculatechecksum(msg):
+    """
+
+    :param msg:
+    :return:
+    """
+    chksum = 0
+    for b in msg:
+        chksum += int.from_bytes(b)
+    return chksum & 0xff
+
+
 class NCDDevice:
     """Class to control NCD ethernet devices."""
 
@@ -111,17 +123,6 @@ class NCDDevice:
                                    " Failed to send to socket.")
             total_sent = total_sent + sent
 
-    def __calculatechecksum(self, msg):
-        """
-
-        :param msg:
-        :return:
-        """
-        chksum = 0
-        for b in msg:
-            chksum += int.from_bytes(b)
-        return chksum & 0xff
-
     def __switchonrelay(self, bank, relay):
         """
 
@@ -134,7 +135,7 @@ class NCDDevice:
             + self.ncd_command_hdr \
             + (self.ncd_base_on_command + relay).to_bytes() \
             + bank.to_bytes()
-        relay_command += self.__calculatechecksum(relay_command).to_bytes()
+        relay_command += calculatechecksum(relay_command).to_bytes()
         self.__send(relay_command)
 
     def __switchoffrelay(self, bank, relay):
@@ -149,7 +150,7 @@ class NCDDevice:
             + self.ncd_command_hdr \
             + (self.ncd_base_off_command + relay).to_bytes() \
             + bank.to_bytes()
-        relay_command += self.__calculatechecksum(relay_command).to_bytes()
+        relay_command += calculatechecksum(relay_command).to_bytes()
         self.__send(relay_command)
 
     def connect(self):
