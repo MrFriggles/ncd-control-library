@@ -1,3 +1,5 @@
+"""NCD ethernet library."""
+
 import enum
 import os
 import socket
